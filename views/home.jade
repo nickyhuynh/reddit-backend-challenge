@@ -1,0 +1,43 @@
+doctype html
+html
+  head
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js")
+    style.
+      .topic {
+        border: 1px solid black;
+        font-size: 24px;
+      }
+      .votes {
+        display: flex;
+        flex-direction: row;
+      }
+      .upvotes {
+        color: #008000;
+      }
+      .downvotes {
+        color: #800000;
+      }
+      #upvoteButton {
+        background-image: url("assets/up.png");
+        width: 20px;
+        height: 20px;
+        background-size: 20px 20px;
+      }
+      #downvoteButton {
+        background-image: url("assets/down.png");
+        width: 20px;
+        height: 20px;
+        background-size: 20px 20px;
+      }
+  body
+    a(href='/submit') submit a topic
+    h1 Topics
+    div
+      each topic in topics
+        div.topic() #{topic.title}
+          div.votes
+            div#downvoteButton
+            div.downvotes #{topic.downvotes}
+            div /
+            div.upvotes #{topic.upvotes}
+            div#upvoteButton
