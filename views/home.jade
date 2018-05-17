@@ -17,13 +17,13 @@ html
       .downvotes {
         color: #800000;
       }
-      #upvoteButton {
+      .upvoteButton {
         background-image: url("assets/up.png");
         width: 20px;
         height: 20px;
         background-size: 20px 20px;
       }
-      #downvoteButton {
+      .downvoteButton {
         background-image: url("assets/down.png");
         width: 20px;
         height: 20px;
@@ -34,10 +34,47 @@ html
     h1 Topics
     div
       each topic in topics
-        div.topic() #{topic.title}
+        div.topic(uuid=topic.uuid) #{topic.title}
           div.votes
-            div#downvoteButton
+            div.downvoteButton
             div.downvotes #{topic.downvotes}
             div /
             div.upvotes #{topic.upvotes}
-            div#upvoteButton
+            div.upvoteButton
+            div.overallVotes overall votes: #{topic.upvotes - topic.downvotes}
+    script.
+      var upvoteButtons = document.getElementsByClassName("upvoteButton");
+
+      for(var i = 0; i < upvoteButtons.length; i++) {
+        upvoteButtons[i].onclick = function() {
+          var upvotes = $(this).siblings(".upvotes");
+          var overallVotes = $(this).siblings(".overallVotes");
+          $.ajax({
+              url: '/upvote/' + this.parentNode.parentNode.getAttribute("uuid"),
+              type: 'PUT',
+              contentType: "application/json",
+              success: function(result) {
+                upvotes[0].innerHTML = result["upvotes"];
+                overallVotes[0].innerHTML = "overall votes: " + (result["upvotes"] - result["downvotes"]);
+              }
+          });
+        }
+      }
+
+      var downvoteButtons = document.getElementsByClassName("downvoteButton");
+
+      for(var i = 0; i < upvoteButtons.length; i++) {
+        downvoteButtons[i].onclick = function() {
+          var downvotes = $(this).siblings(".downvotes");
+          var overallVotes = $(this).siblings(".overallVotes");
+          $.ajax({
+              url: '/downvote/' + this.parentNode.parentNode.getAttribute("uuid"),
+              type: 'PUT',
+              contentType: "application/json",
+              success: function(result) {
+                downvotes[0].innerHTML = result["downvotes"];
+                overallVotes[0].innerHTML = "overall votes: " + (result["upvotes"] - result["downvotes"]);
+              }
+          });
+        }
+      }
