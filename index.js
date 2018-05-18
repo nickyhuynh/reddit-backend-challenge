@@ -1,6 +1,6 @@
 const express = require('express'); //Express web server framework
-const bodyParser = require("body-parser");
-const uuid = require('uuid');
+const bodyParser = require("body-parser"); //Needed to parse the body of HTTP methods
+const uuid = require('uuid'); //unique id for topics since title can be the same
 
 const app = express();
 
@@ -13,15 +13,24 @@ class Topic {
   }
 }
 
+/*
+  Since we can't use a DB, using a map so we can retrieve topics by ID.
+*/
 var topics = new Map();
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false })); //determines which nesting parsing algorithm to use
+app.use(bodyParser.json()); //tells Express you're using JSON
 app.use(express.static(__dirname + '/public'));
 
+/*
+  determines where to find views and which engine to use for templating.
+*/
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 
+/*
+  only reorders the topics when the page is refreshed
+*/
 app.get('/', function(req, res) {
   res.render('home.jade', {
     topics: Array.from(topics.values()).sort(compare)
@@ -30,13 +39,16 @@ app.get('/', function(req, res) {
 
 app.get('/submit', function(req, res) {
   res.render('createTopic.jade', {
-
   })
 });
 
+/*
+  Normally, there'd be rate limiting or throttling to prevent people from hogging resources
+*/
 app.put('/upvote/:uuid', function(req, res) {
   var uuid = req.params.uuid;
 
+  //error checking for id and sends results as a json object
   if(topics.get(uuid) === undefined) {
     res.send({"error": {"code": 400, "message": "ID not found."}})
   } else {
@@ -50,6 +62,7 @@ app.put('/upvote/:uuid', function(req, res) {
 app.put('/downvote/:uuid', function(req, res) {
   var uuid = req.params.uuid;
 
+  //error checking for id and sends results as a json object
   if(topics.get(uuid) === undefined) {
     res.send({"error": {"code": 400, "message": "ID not found."}})
   } else {
@@ -61,6 +74,8 @@ app.put('/downvote/:uuid', function(req, res) {
 });
 
 app.post('/addTopic', function(req, res) {
+
+  //error checking for title length and sends results as a json object
   if(req.body.title.length > 0 && req.body.title.length <= 255) {
     var topic = new Topic(req.body.title, uuid.v1());
     topics.set(topic.uuid, topic);

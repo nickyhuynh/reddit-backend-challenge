@@ -54,8 +54,10 @@ html
               type: 'PUT',
               contentType: "application/json",
               success: function(result) {
-                upvotes[0].innerHTML = result["data"]["upvotes"];
-                overallVotes[0].innerHTML = "overall votes: " + (result["data"]["upvotes"] - result["data"]["downvotes"]);
+                if (!("error" in result)) {
+                  upvotes[0].innerHTML = result["data"]["upvotes"];
+                  overallVotes[0].innerHTML = "overall votes: " + (result["data"]["upvotes"] - result["data"]["downvotes"]);
+                }
               }
           });
         }
@@ -72,8 +74,10 @@ html
               type: 'PUT',
               contentType: "application/json",
               success: function(result) {
-                downvotes[0].innerHTML = result["data"]["downvotes"];
-                overallVotes[0].innerHTML = "overall votes: " + (result["data"]["upvotes"] - result["data"]["downvotes"]);
+                if (!("error" in result)) {
+                  downvotes[0].innerHTML = result["data"]["downvotes"];
+                  overallVotes[0].innerHTML = "overall votes: " + (result["data"]["upvotes"] - result["data"]["downvotes"]);
+                }
               }
           });
         }
