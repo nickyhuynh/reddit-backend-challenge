@@ -9,6 +9,7 @@ Assumptions:
 ```
 ```
 Intentional design decisions:
+* Sorting only happens when the page is refreshed. 
 * The use of a map for an in memory data store. It was necessary to be able to retrieve the correct topic
   based on an ID.
 * Use of a templating engine for separation of concerns and a clear MVC design.
