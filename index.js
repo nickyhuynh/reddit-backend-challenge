@@ -45,29 +45,39 @@ app.get('/submit', function(req, res) {
 app.put('/upvote/:uuid', function(req, res) {
   var uuid = req.params.uuid;
 
-  topics.get(uuid).upvotes += 1;
+  if(topics.get(uuid) === undefined) {
+    res.send({"error": {"code": 400, "ID not found."}})
+  } else {
+    topics.get(uuid).upvotes += 1;
 
-  console.log(topics.get(uuid));
-
-  res.setHeader('Content-Type', 'application/json');
-  res.send({"data": topics.get(uuid)});
+    res.setHeader('Content-Type', 'application/json');
+    res.send({"data": topics.get(uuid)});
+  }
 });
 
 app.put('/downvote/:uuid', function(req, res) {
   var uuid = req.params.uuid;
 
-  topics.get(uuid).downvotes += 1;
+  if(topics.get(uuid) === undefined) {
+    res.send({"error": {"code": 400, "ID not found."}})
+  } else {
+    topics.get(uuid).downvotes += 1;
 
-  res.setHeader('Content-Type', 'application/json');
-  res.send({"data": topics.get(uuid)});
+    res.setHeader('Content-Type', 'application/json');
+    res.send({"data": topics.get(uuid)});
+  }
 });
 
 app.post('/addTopic', function(req, res) {
-  var topic = new Topic(req.body.title, uuid.v1());
-  topics.set(topic.uuid, topic);
+  if(req.body.title.length > 0 && req.body.title.length <= 255) {
+    var topic = new Topic(req.body.title, uuid.v1());
+    topics.set(topic.uuid, topic);
 
-  res.setHeader('Content-Type', 'application/json');
-  res.send({"data": topic});
+    res.setHeader('Content-Type', 'application/json');
+    res.send({"data": topic});
+  } else {
+    res.send({"error": {"code": 400, "message": "Topic must be between 0 and 256 characters long, Non-inclusive."}})
+  }
 });
 
 app.listen(8888);
