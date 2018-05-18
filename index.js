@@ -15,14 +15,6 @@ class Topic {
 
 var topics = new Map();
 
-var id = uuid.v1();
-
-topics.set(id, new Topic("hello world", id))
-
-id = uuid.v1();
-
-topics.set(id, new Topic("mellow world", id));
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
