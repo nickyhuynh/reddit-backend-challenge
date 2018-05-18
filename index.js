@@ -1,4 +1,5 @@
 const express = require('express'); //Express web server framework
+const bodyParser = require("body-parser");
 const uuid = require('uuid');
 
 const app = express();
@@ -22,6 +23,8 @@ id = uuid.v1();
 
 topics.set(id, new Topic("mellow world", id));
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
 
 app.set('views', __dirname + '/views');
@@ -34,6 +37,9 @@ app.get('/', function(req, res) {
 });
 
 app.get('/submit', function(req, res) {
+  res.render('createTopic.jade', {
+
+  })
 });
 
 app.put('/upvote/:uuid', function(req, res) {
@@ -43,7 +49,8 @@ app.put('/upvote/:uuid', function(req, res) {
 
   console.log(topics.get(uuid));
 
-  res.send(topics.get(uuid));
+  res.setHeader('Content-Type', 'application/json');
+  res.send({"data": topics.get(uuid)});
 });
 
 app.put('/downvote/:uuid', function(req, res) {
@@ -51,9 +58,16 @@ app.put('/downvote/:uuid', function(req, res) {
 
   topics.get(uuid).downvotes += 1;
 
-  console.log(topics.get(uuid));
+  res.setHeader('Content-Type', 'application/json');
+  res.send({"data": topics.get(uuid)});
+});
 
-  res.send(topics.get(uuid));
+app.post('/addTopic', function(req, res) {
+  var topic = new Topic(req.body.title, uuid.v1());
+  topics.set(topic.uuid, topic);
+
+  res.setHeader('Content-Type', 'application/json');
+  res.send({"data": topic});
 });
 
 app.listen(8888);

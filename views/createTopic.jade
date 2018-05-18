@@ -1,52 +1,40 @@
 doctype html
 html
   head
+    style.
+      .submitButton {
+        padding-right: 5px;
+      }
   body
-    a(href='/submit') submit a topic
-    h1 Topics
+    h1 Create Topic
+    input(maxlength='255')#topic
     div
-      each topic in topics
-        div.topic(uuid=topic.uuid) #{topic.title}
-          div.votes
-            div.downvoteButton
-            div.downvotes #{topic.downvotes}
-            div /
-            div.upvotes #{topic.upvotes}
-            div.upvoteButton
-            div.overallVotes overall votes: #{topic.upvotes - topic.downvotes}
+      button(disabled).submitButton submit
+      a(href='/')
+         button.cancelButton cancel
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js")
     script.
-      var upvoteButtons = document.getElementsByClassName("upvoteButton");
+      var submitButton = document.getElementsByClassName("submitButton")[0];
 
-      for(var i = 0; i < upvoteButtons.length; i++) {
-        upvoteButtons[i].onclick = function() {
-          var upvotes = $(this).siblings(".upvotes");
-          var overallVotes = $(this).siblings(".overallVotes");
-          $.ajax({
-              url: '/upvote/' + this.parentNode.parentNode.getAttribute("uuid"),
-              type: 'PUT',
-              contentType: "application/json",
-              success: function(result) {
-                upvotes[0].innerHTML = result["upvotes"];
-                overallVotes[0].innerHTML = "overall votes: " + (result["upvotes"] - result["downvotes"]);
-              }
-          });
+      document.getElementById("topic").onkeyup = function() {
+        console.log(submitButton.disabled);
+        if(this.value.length === 0) {
+          submitButton.disabled = true;
+        } else {
+          submitButton.disabled = false;
         }
       }
 
-      var downvoteButtons = document.getElementsByClassName("downvoteButton");
-
-      for(var i = 0; i < upvoteButtons.length; i++) {
-        downvoteButtons[i].onclick = function() {
-          var downvotes = $(this).siblings(".downvotes");
-          var overallVotes = $(this).siblings(".overallVotes");
-          $.ajax({
-              url: '/downvote/' + this.parentNode.parentNode.getAttribute("uuid"),
-              type: 'PUT',
-              contentType: "application/json",
-              success: function(result) {
-                downvotes[0].innerHTML = result["downvotes"];
-                overallVotes[0].innerHTML = "overall votes: " + (result["upvotes"] - result["downvotes"]);
+      submitButton.onclick = function() {
+        $.ajax({
+            url: '/addTopic',
+            type: 'POST',
+            data: JSON.stringify({"title": document.getElementById("topic").value}),
+            contentType: "application/json",
+            success: function(result) {
+              if (!("error" in result)) {
+                location.href = "/";
               }
-          });
-        }
+            }
+        });
       }
