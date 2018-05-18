@@ -14,7 +14,7 @@ Intentional design decisions:
 * Use of a templating engine for separation of concerns and a clear MVC design.
 * Content types so type of data is clearly identified on both ends.
 * Putting scripts at the end of the body for performance.
-* Format of the JSON responses is absed on Google's JSON style guide: 
+* Format of the JSON responses is based on Google's JSON style guide: 
   https://google.github.io/styleguide/jsoncstyleguide.xml
 ```
 ```
