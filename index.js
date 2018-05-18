@@ -32,8 +32,14 @@ app.set('view engine', 'jade');
   only reorders the topics when the page is refreshed
 */
 app.get('/', function(req, res) {
+  var redditTopics = Array.from(topics.values());
+  var len = redditTopics.length;
+  //first twenty/max topics
+  if(len > 20) {
+    len = 20;
+  }
   res.render('home.jade', {
-    topics: Array.from(topics.values()).sort(compare)
+    topics: redditTopics.sort(compare).slice(0, len);
   });
 });
 
@@ -76,7 +82,7 @@ app.put('/downvote/:uuid', function(req, res) {
 app.post('/addTopic', function(req, res) {
 
   //error checking for title length and sends results as a json object
-  if(req.body.title.length > 0 && req.body.title.length <= 255) {
+  if(req.body.title != null && req.body.title.length > 0 && req.body.title.length <= 255) {
     var topic = new Topic(req.body.title, uuid.v1());
     topics.set(topic.uuid, topic);
 
