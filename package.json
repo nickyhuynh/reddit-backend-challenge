@@ -7,12 +7,19 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-  "author": "",
+  "keywords": [
+    "example",
+    "heroku"
+  ],
+  "author": "Nicky Huynh",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "jade": "^1.11.0",
     "uuid": "^3.2.1"
-  }
+  },
+  "engines": {
+    "node": "9.8.0"
+  },
 }

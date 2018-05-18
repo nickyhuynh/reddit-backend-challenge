@@ -32,7 +32,7 @@ app.set('view engine', 'jade');
 
 app.get('/', function(req, res) {
   res.render('home.jade', {
-    topics: Array.from(topics.values())
+    topics: Array.from(topics.values()).sort(compare)
   });
 });
 
@@ -46,7 +46,7 @@ app.put('/upvote/:uuid', function(req, res) {
   var uuid = req.params.uuid;
 
   if(topics.get(uuid) === undefined) {
-    res.send({"error": {"code": 400, "ID not found."}})
+    res.send({"error": {"code": 400, "message": "ID not found."}})
   } else {
     topics.get(uuid).upvotes += 1;
 
@@ -59,7 +59,7 @@ app.put('/downvote/:uuid', function(req, res) {
   var uuid = req.params.uuid;
 
   if(topics.get(uuid) === undefined) {
-    res.send({"error": {"code": 400, "ID not found."}})
+    res.send({"error": {"code": 400, "message": "ID not found."}})
   } else {
     topics.get(uuid).downvotes += 1;
 
@@ -80,4 +80,10 @@ app.post('/addTopic', function(req, res) {
   }
 });
 
-app.listen(8888);
+function compare(t1, t2) {
+  var firstOverall = t1.upvotes - t1.downvotes;
+  var secondOverall = t2.upvotes - t2.downvotes;
+  return secondOverall-firstOverall;
+}
+
+app.listen(5000);
