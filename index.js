@@ -86,4 +86,4 @@ function compare(t1, t2) {
   return secondOverall-firstOverall;
 }
 
-app.listen(3000);
+app.listen(process.env.PORT || 5000)
