@@ -39,7 +39,7 @@ app.get('/', function(req, res) {
     len = 20;
   }
   res.render('home.jade', {
-    topics: redditTopics.sort(compare).slice(0, len);
+    topics: redditTopics.sort(compare).slice(0, len)
   });
 });
 
